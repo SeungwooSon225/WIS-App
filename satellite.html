@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <style>
+        body{
+            background-image: url('image/background.png');
+            background-attachment: fixed;
+            background-repeat : no-repeat;
+            background-size : cover;
+            position:absolute; width: 500px; top:0%; left:50%; margin-left:-230px;
+        }
+
+        a{
+            text-decoration:none;
+            color:rgb(0, 0, 0);
+        }
+
+        a:hover {
+            color:rgb(146, 146, 146);
+        }
+
+        #simpleHeader {
+            position: fixed;
+            top:0;
+            width: 450px;
+            height:130px;
+            margin: 0px 5px 5px 5px;
+        }
+
+        #body {
+            padding-top: 100px;
+        }
+
+        #satelliteMap {
+            height:770px;
+            width: 440px;
+            overflow:hidden;
+            text-align: left;
+            line-height: 50px;
+            padding-left: 0px;
+            margin-top: 100px;
+            margin: 10px 5px 10px 5px;
+            background-color:rgb(179, 224, 255);
+            border-radius: 20px;
+            overflow: auto;
+        }
+
+
+        #mapPreview {
+            position: absolute; 
+            top:130px; 
+            left: 25px; 
+            width: 80px;
+            height: 100px;
+            background-color: white;
+            border: 2px solid rgb(0, 0, 0);
+        }
+
+        #mapTarget {
+            position: absolute; 
+            top:5px; 
+            left: 5px; 
+            width: 65px;
+            height: 85px;
+            border: 2px solid rgb(255, 0, 0);
+        }
+
+        p { 
+            font-family: Arial;
+            line-height: 10px;
+            font-weight: bold;
+        }
+
+        button {
+            cursor:pointer;
+            background-color: white;
+        }
+
+        button:hover {
+            background-color: rgb(161, 159, 159);
+        }
+        
+    </style>
+
+</head>
+
+    
+<body>
+    <div id ="simpleHeader">
+        <div style="float: left;">
+            <P>
+                <br><span style = "font-size: 35px; line-height: 45px; padding-left: 30px;">안암동</span><br>
+                <span style = "font-size: 25px; line-height: 35px; padding-left: 55px;">흐림</span>
+            </P>
+        </div>
+        <div style="padding-left: 330px;">
+            <P>
+                <span style = "font-size: 60px; line-height: 70px;">10°<br></span>
+                <span style = "font-size: 20px; line-height: 0px;">&nbsp;&nbsp;&nbsp;10°/7°<br></span>
+            </P>
+        </div>
+    </div>
+
+
+    <div id = "body">
+        <div id = "satelliteMap">
+            <div style='position: relative;'>        
+                <img id = 'mapImg' src='image/satellite.png' style='width: 440px; height:770px; position: absolute; top:0px'>
+                <img id = 'pathImg' src='image/path.svg' style='width: 270px; height:380px; position: absolute; top:120px; left:120px; visibility: hidden;'>
+            </div>
+
+            <div id = 'mapPreview'>
+                <img src='image/satellite.png' width='70' height='90'style='position: absolute; top:5px; left: 5px;'>
+                <div id = 'mapTarget'></div>
+            </div>
+
+
+            <button id='pathBtn' type='button' style='position: absolute; top:830px; left: 300px; border-radius: 5px; border: 2px solid; font-family: Arial; font-weight: bold; font-size: 15px;' onclick='displayPath()'>예상경로</a></button>
+            <button id='zoomBtn' style='position: absolute; top: 830px; left: 380px;border-radius: 5px; border: 2px solid; font-family: Arial; font-weight: bold; font-size: 15px;' onclick='mapZoomin()'>확대</button>
+            <button type='button' style='position: absolute; top:820px; left: 20px; border:hidden; background-color:rgba(179, 224, 255, 0); font-size: 30px; font-weight: bolder;'><a href='./main.html'>◀</a></button>                
+        </div>
+    </div>
+ 
+</body>
+</html>
+
+<script>
+    var map = document.getElementById('mapImg');
+    var wMap = document.getElementById('satelliteMap');
+    var mapTarget = document.getElementById('mapTarget');
+    var pathImg = document.getElementById('pathImg');
+    var pathBtn = document.getElementById('pathBtn');
+    var zoomBtn = document.getElementById('zoomBtn');
+    var openWin;
+    var isZoomin = false
+    var isDisplayPath = false
+    var canDisplayPath = true
+
+    function mapZoomin() {
+        if(isZoomin == false){      
+            map.style.width = 2000 + 'px';
+            map.style.height = 3000 + 'px';
+
+            wMap.scrollTop = 730;
+            wMap.scrollLeft = 700;
+
+            mapTarget.style.width = 20 + 'px';
+            mapTarget.style.height = 30 + 'px';
+            pathImg.style.visibility = "hidden";
+            pathBtn.style.backgroundColor = "gray"
+            canDisplayPath = false;
+
+            zoomBtn.innerText = '축소';
+            isZoomin = true;
+        }
+        else{
+            map.style.width = 440 + 'px';
+            map.style.height = 770 + 'px';
+
+            mapTarget.style.width = 65 + 'px';
+            mapTarget.style.height = 85 + 'px';
+            mapTarget.style.top = 5 + 'px';
+            mapTarget.style.left = 5 + 'px';
+            pathImg.style.visibility = "hidden";
+            pathBtn.style.backgroundColor = "white"
+            canDisplayPath = true;
+
+            zoomBtn.innerText = '확대';
+            isZoomin = false;
+        }
+    }
+
+    function displayPath() {
+        if (canDisplayPath){
+            if (isDisplayPath == false){
+                pathImg.style.visibility = "visible";
+                isDisplayPath= true;
+                pathBtn.style.backgroundColor = "rgb(100, 100, 240)";
+            }
+            else{
+                pathImg.style.visibility = "hidden";
+                isDisplayPath= false;
+                pathBtn.style.backgroundColor = "white"
+            }
+        }
+
+    }
+
+    wMap.addEventListener('scroll', function() {
+        if(isZoomin == true){
+            mapTarget.style.top = wMap.scrollTop/3000 * 100 + 'px';
+            mapTarget.style.left = wMap.scrollLeft/2000 * 80 + 'px';
+        }
+    });
+</script>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #daily {
+            height:370px;
+            width: 440px;
+            overflow:hidden;
+            text-align: left;
+            line-height: 50px;
+            padding-left: 10px;
+            margin: 10px 5px 10px 5px;
+            background-color:rgb(240, 240, 240);
+            border-radius: 20px;
+            
+        }
+        p { 
+            font-family: Arial;
+            line-height: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <script> 
+        var dailyWeatherJeju = [
+            ['12/1(월)', 'cloud-sunny', '10°/6°', '30%'],
+            ['12/2(화)', 'rain', '11°/7°', '60%'],
+            ['12/3(수)', 'rain', '12°/8°', '50%'],
+            ['12/4(목)', 'sunny', '11°/6°', '10%'],
+            ['12/5(금)', 'sunny', '10°/7°', '0%'],
+            ['12/6(토)', 'sunny', '9°/5°', '0%'],
+            ['12/7(일)', 'cloud-sunny', '10°/6°', '20%']
+        ];
+
+        var schedule = ['제주', ['12/1(월)', '12/2(화)', '12/3(수)'],'제주도 여행'];
+
+        var dailyWeather = [
+            ['12/1(월)', 'cloud-sunny', '10°/6°', '30%'],
+            ['12/2(화)', 'rain', '11°/7°', '60%'],
+            ['12/3(수)', 'sunny', '12°/8°', '30%'],
+            ['12/4(목)', 'sunny', '11°/6°', '10%'],
+            ['12/5(금)', 'sunny', '9°/7°', '0%'],
+            ['12/6(토)', 'cloud', '9°/5°', '20%'],
+            ['12/7(일)', 'cloud-sunny', '10°/6°', '20%']
+        ];
+
+        var Request = function() {  
+            this.getParameter = function(name) {  
+                var rtnval = '';  
+                var nowAddress = unescape(location.href);  
+                var parameters = (nowAddress.slice(nowAddress.indexOf('?') + 1,  
+                        nowAddress.length)).split('&');  
+                for (var i = 0; i < parameters.length; i++) {  
+                    var varName = parameters[i].split('=')[0];  
+                    if (varName.toUpperCase() == name.toUpperCase()) {  
+                        rtnval = parameters[i].split('=')[1];  
+                        break;  
+                    }  
+                }  
+                return rtnval;  
+            }  
+        }  
+        var request = new Request(); 
+    </script>  
+
+    <script>
+        var region = [
+            ["서울경기", "10°/7°", 170, 90],
+            ["영서", "11°/7°", 100, 180],
+            ["영동", "12°/7°", 180, 260],
+            ["충남", "13°/7°", 300, 60],
+            ["충북", "14°/7°", 280, 160],
+            ["경북", "15°/7°", 330, 260],
+            ["전남", "16°/7°", 500, 70],
+            ["전북", "17°/7°", 400, 100],
+            ["경남", "18°/7°", 450, 230],
+            ["제주", "19°/7°", 620, 50],
+            ["울릉독도", "20/7°", 230, 360],
+            ["서울", 'sunny', "10°/7°", 280, 160],
+            ["김포", 'sunny', "11°/7°", 180, 50],
+            ["연천", 'cloud', "12°/7°", 20, 150],
+            ["가평", 'sunny', "14°/7°", 120, 300],
+            ["양평", 'cloud-sunny', "15°/7°", 240, 370],
+            ["이천", 'sunny', "16°/7°", 450, 330],
+            ["수원", 'rain', "17°/7°", 400, 170],
+            ["평택", 'sunny', "18°/7°", 530, 150]
+        ];
+        
+        var paramValue = request.getParameter('test1');
+    </script>
+
+    <div id='daily'>
+        <script>
+            var tt = schedule[0].includes('12/4(목)');
+            document.write("<p>" + region[paramValue][0] + " 일별 날씨 </p>");
+
+            var weather;
+            if(region[paramValue][0]=='제주') weather = dailyWeatherJeju;
+            else weather = dailyWeather;
+        </script>
+        <div style="overflow: auto; padding-left: 10px; padding-top: 20px;">
+            <div style="overflow: auto; padding-left: 10px;">
+                <script type="text/javascript">
+                    
+                    document.write("<table style='width: 100%; text-align:center; border: 1px; white-space:nowrap;border-collapse:collapse; table-layout: fixed;'");
+                    
+        
+                    document.write("<tr>");           
+                    for ( var j=0; j<weather.length ; j++) {
+                        var txt = weather[j][1]
+
+                        document.write("<td width=100px><img src='image/" + txt +".svg' style='width:50px; height:50px;'></td>");    
+                    }    
+                    document.write("</tr>");
+
+                    document.write("<tr>");           
+                    for ( var j=0; j<weather.length ; j++) {
+                        var txt = weather[j][3]
+
+                        document.write("<td width=100px><img src='image/water.svg' style='width: 20px; height: 20px;'>"+ txt +"</td>");     
+                    }    
+                    document.write("</tr>");
+                    
+
+                    document.write("<tr height=10px>");
+                    for ( var j=0; j<weather.length ; j++) {                 
+                        var txt= weather[j][2]            
+                        document.write("<td width=100px>"+ txt +"</td>");     
+                    }
+                    document.write("</tr>");  
+
+                    var scheduleRegion = schedule[0];
+                    
+                    document.write("<tr>");
+                    for ( var j=0; j<weather.length ; j++) {
+        
+                        var txt= weather[j][0]
+
+                        if(region[paramValue][0] == scheduleRegion && schedule[1].includes(txt) ){
+                            document.write("<td width=100px style='background-color: rgb(171,255,212)'>"+ txt +"<br>"+schedule[2]+"</td>");
+                        }
+                         else{
+                            document.write("<td width=100px>"+ txt +"</td>");
+                        }    
+                    }
+                    document.write("</tr>");   
+
+                    document.write("</table>");             
+                </script>
+            </div>  
+
+    </div>
+</body>
+</html>
+

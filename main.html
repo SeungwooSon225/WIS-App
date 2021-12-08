@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script type="text/javascript">
+        var regionNo = 0;
+
+        var mainInfo =[
+            ['안암동', '흐림', '10°', '10°/7°', '어제보다 2° 낮아요', '미세먼지 보통', true],
+            ['자은동', '맑음', '15°', '17°/10°', '어제보다 1° 높아요', '미세먼지 좋음', false]
+        ];
+
+        var dailyWeather = [
+            ['월', 'cloud-sunny', '10°/6°', '30%'],
+            ['화', 'cloud', '11°/7°', '40%'],
+            ['수', 'cloud', '12°/8°', '20%'],
+            ['목', 'sunny', '11°/6°', '10%'],
+            ['금', 'sunny', '10°/7°', '0%'],
+            ['토', 'sunny', '9°/5°', '0%'],
+            ['일', 'cloud-sunny', '10°/6°', '20%']
+        ];
+
+        var houlyWeather =  [
+            [17, 'cloud-sunny', 9, '30%',],
+            [20, 'cloud', 8, '50%'],
+            [23, 'rain', 8, '60%'],
+            [2, 'rain', 7, '70%'],
+            [5, 'rain', 8, '60%'],
+            [8, 'cloud-sunny',9, '40%'],
+            [11, 'sunny',9, '10%'],
+            [14, 'sunny',11, '0%']
+        ];
+
+
+        var airCondition = new Array("보통 0.046ppm","좋음 0.004ppm","좋음 0.8ppm","보통 0.041ppm");
+        var lifeCondition = new Array("71%", "동남 2m/s", "낮음", "보통");
+
+        var dustTime = new Array(17, 20, 23, 2, 5);
+        var dust = new Array(24, 25, 25, 23, 22);
+    </script>
+
+    <style>
+        #mainBody{
+            background-image: url('image/background.png');
+            background-attachment: fixed;
+            background-repeat : no-repeat;
+            background-size : cover;
+            position:absolute; width: 500px; top:0%; left:50%; margin-left:-230px;
+        }
+
+        a{
+            text-decoration:none;
+            color:rgb(0, 0, 0);
+        }
+
+        button {
+            cursor:pointer;
+        }
+
+        button:hover {
+            background-color: rgb(161, 159, 159);
+        }
+
+        #header {
+            height:330px;
+            width: 450px;
+            overflow:hidden;
+            text-align: center;
+            padding-top: 50px;
+            padding-bottom: 20px;
+            margin: 0px 5px 5px 5px;
+            visibility: visible
+            
+        }
+
+        #simpleHeader {
+            position: fixed;
+            top:0;
+            width: 450px;
+            height:130px;
+            margin: 0px 5px 5px 5px;
+            background-color:rgb(240, 240, 240);
+            border-bottom: 1px solid rgb(0, 0, 0);
+            visibility: hidden
+        }
+
+        #body {
+            padding-top: 0px;
+        }
+
+        #ai {
+            height:50px;
+            width: 440px;
+            overflow:hidden;
+            text-align: left;
+            line-height: 50px;
+            padding-left: 10px;
+            margin-top: 100px;
+            margin: 10px 5px 10px 5px;
+            background-color:rgb(240, 240, 240);
+            border-radius: 20px;
+        }
+
+        #hourly {
+            height:380px;
+            width: 440px;
+            overflow:hidden;
+            text-align: left;
+            line-height: 50px;
+            padding-left: 10px;
+            margin: 10px 5px 10px 5px;
+            background-color:rgb(240, 240, 240);
+            border-radius: 20px;
+            
+        }
+
+        #daily {
+            height:300px;
+            width: 440px;
+            overflow:hidden;
+            text-align: left;
+            line-height: 50px;
+            padding-left: 10px;
+            margin: 10px 5px 10px 5px;
+            background-color:rgb(240, 240, 240);
+            border-radius: 20px;
+            
+        }
+
+        #air {
+            height:560px;
+            width: 440px;
+            overflow:hidden;
+            text-align: left;
+            line-height: 50px;
+            padding-left: 10px;
+            margin: 10px 5px 10px 5px;
+            background-color:rgb(240, 240, 240);
+            border-radius: 20px;
+        }
+
+        #life {
+            height:240px;
+            width: 440px;
+            overflow:hidden;
+            text-align: left;
+            padding-left: 10px;
+            margin: 10px 5px 10px 5px;
+            background-color:rgb(240, 240, 240);
+            border-radius: 20px;
+        }
+
+        p { 
+            font-family: Arial;
+            line-height: 10px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+    
+<body id="mainBody">
+    <div>
+        <div id ="header">
+            <span id = "regionNavi" style = "font-size: 20px; line-height: 0px; font-weight: bolder;"> ● ○</span><br><br>
+            <span>
+                <img id="gpsImg" src='image/GPS.svg' style="float: left; width: 60px; height: 60px; padding-left: 90px;">
+                <span id = "mainTxt0" style = "font: bold 45px Jeju-Gothic, sans-serif; margin-bottom: 1px; padding-right: 150px;"><a href="./main1.html">안암동</a></span>
+            </span>            
+            <P>
+                <span>
+                    <button id="leftRegionBtn" onClick="leftRegion()"; style="font-size: 30px; margin-right: 100px; border:hidden; background-color: rgba(0, 0, 0, 0);">◁</button>
+                    <span id = "mainTxt1" style = "font-size: 35px; line-height: 60px;">흐림</span>
+                    <button id="rightRegionBtn" onClick="rightRegion()"; style="font-size: 30px; margin-left: 100px; border:hidden; background-color: rgba(0, 0, 0, 0);">▷</button>
+                </span><br>
+                <span id = "mainTxt2" style = "font-size: 60px; line-height: 60px; font-weight: bolder;"> 10°</span><br>
+                <span id = "mainTxt3" style = "font-size: 20px; line-height: 25px;">10°/7°</span><br><br><br>
+                <span id = "mainTxt4" style = "font-size: 20px; line-height: 10px;">어제보다 2° 낮아요</span><br><br>
+                <span id = "mainTxt5" style = "font-size: 20px; line-height: 10px;">미세먼지 보통</span>
+            </P>
+        </div>
+
+        <div id ="simpleHeader">
+            <div style="float: left;">
+                <P>
+                    <br><span id = "headerTxt0" style = "font-size: 35px; line-height: 45px; padding-left: 30px;">안암동</span><br>
+                    <span id = "headerTxt1" style = "font-size: 25px; line-height: 35px; padding-left: 55px;">흐림</span>
+                </P>
+            </div>
+            <div style="padding-left: 330px;">
+                <P>
+                    <span id = "headerTxt2"style = "font-size: 60px; line-height: 70px;">10°</span><br>
+                    &nbsp;&nbsp;&nbsp;<span id = "headerTxt3"style = "font-size: 20px; line-height: 0px;">10°/7°</span><br>
+                </P>
+            </div>
+        </div>
+    </div>
+
+    <div id = "body">
+        <div id = "ai">
+            <P style = "font-size: 20px;"> 
+                AI 추천
+                <button id = "aiPannerBtn" onClick="openPanner()"; style = "float:right; margin: -5px 10px; border:hidden; background-color: rgb(240, 240, 240); font-size: 22px;" type ="button"> ▼</button>
+            </P>
+            <p>
+                <div style="float: left; padding-left: 10px; width: 390px;">
+                    <P style = "font-size: 18px; line-height: 0px;"> 추천 아이템 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <P style = "font-size: 15px; font-weight: normal; text-align: center;"> 
+                        <img src="image/Umbrella.svg" style="width: 50px; height: 50px;">
+                        오후에 비소식이 있어요
+                        <img src="image/Jacket.svg" style="width: 50px; height: 50px;">  
+                        어제보다 추워요
+                    </P>
+
+                    <P style = "font-size: 18px; line-height: 0px; padding-top: 30px;"> 생활 패턴/일정 분석 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    
+                        <P style = "float: left; padding-left: 30px; font-size: 15px; font-weight: normal; line-height: 5px; text-align: center;"> <br>운동 시간(오후 7시)에 비소식이 있어요 </P> 
+                        <form style="float: left; padding-left: 5px; height: 0px;">
+                            <input style='visibility: hidden; width: 10px; position: absolute; top:0px' type=text name='test1' value='9'>
+                            <button type='button' onclick="popupWorkout(this.form)" style="border:hidden; background-color: rgb(240, 240, 240);"><img src="image/Add.svg" style="width: 20px; height: 20px;"></button>
+                        </form>
+                        <P style = "float: left; padding-left: 30px; font-size: 15px; font-weight: normal; line-height: 5px; text-align: center;"> <br>'제주도 여행' 일정 기간에 비소식이 있어요</P> 
+                        <form style="float: left; padding-left: 5px; height: 0px;">
+                            <input style='visibility: hidden; width: 10px; position: absolute; top:0px' type=text name='test1' value='9'>
+                            <button type='button' onclick="popupWeather(this.form)" style="border:hidden; background-color: rgb(240, 240, 240);"><img src="image/Add.svg" style="width: 20px; height: 20px;"></button>
+                        </form>                     
+                </div>
+            </p>
+        </div>
+
+        <div id = "hourly">
+            <P style = "font-size: 20px;"> 시간별 </P>
+            <div style="overflow: auto; padding-left: 10px;max-width:440px;">
+                <script type="text/javascript">
+                    document.write("<table style='width: 100%; text-align:center; border: 1px; white-space:nowrap;border-collapse:collapse; table-layout: fixed;'");
+                                   
+                    document.write("<tr height=20px>");                
+                    for ( var j=0; j<houlyWeather.length ; j++) {
+                        var txt = houlyWeather[j][1]
+
+                        document.write("<td width=100px><img src='image/" + txt +".svg' style='width:50px; height:50px;'></td>");     
+                    }   
+                    document.write("</tr>");
+
+                    document.write("<tr height=20px>");                
+                    for ( var j=0; j<houlyWeather.length ; j++) {
+                        var txt = houlyWeather[j][3]
+                        document.write("<td width=100px height=60px><img src='image/water.svg' style='width: 20px; height: 20px;'>"+ txt +"</td>");     
+                    }   
+                    document.write("</tr>");
+                        
+                    document.write("</table>");             
+                </script>
+                
+                <canvas id="hourlyCanvas" width="1512px" height="100px"></canvas>
+               
+
+                <script type="text/javascript">
+                    document.write("<table style='width: 100%; text-align:center; border: 1px; white-space:nowrap;border-collapse:collapse; table-layout: fixed;'");
+                    
+                    document.write("<tr height=20px>");
+                    for ( var j=0; j<houlyWeather.length ; j++) {                 
+                        var txt= houlyWeather[j][2] + "°"              
+                        document.write("<td width=100px>"+ txt +"</td>");     
+                    }
+                    document.write("</tr>");  
+
+                    document.write("<tr height=20px>");
+                    for ( var j=0; j<houlyWeather.length ; j++) {
+                        if (houlyWeather[j][0] > 12)
+                            var txt= "오후" + (houlyWeather[j][0]-12) + "시";
+                        else
+                            var txt= "오전" + houlyWeather[j][0] + "시";
+
+                        document.write("<td width=100px>"+ txt +"</td>");     
+                    }
+                    document.write("</tr>");   
+
+                    document.write("</table>");             
+                </script>
+            </div>
+        </div>
+
+        <div id = "daily">
+            <P style = "font-size: 20px;"> 일별 </P>
+            <div style="overflow: auto; padding-left: 10px;">
+                <script type="text/javascript">
+                    
+                    document.write("<table style='width: 100%; text-align:center; border: 1px; white-space:nowrap;border-collapse:collapse; table-layout: fixed;'");
+                    
+                   
+                    document.write("<tr>");           
+                    for ( var j=0; j<dailyWeather.length ; j++) {
+                        var txt = dailyWeather[j][1]
+
+                        document.write("<td width=100px><img src='image/" + txt +".svg' style='width:50px; height:50px;'></td>");    
+                    }    
+                    document.write("</tr>");
+
+                    document.write("<tr>");           
+                    for ( var j=0; j<dailyWeather.length ; j++) {
+                        var txt = dailyWeather[j][3]
+
+                        document.write("<td width=100px><img src='image/water.svg' style='width: 20px; height: 20px;'>"+ txt +"</td>");     
+                    }    
+                    document.write("</tr>");
+                    
+
+                    document.write("<tr height=10px>");
+                    for ( var j=0; j<dailyWeather.length ; j++) {                 
+                        var txt= dailyWeather[j][2]            
+                        document.write("<td width=100px>"+ txt +"</td>");     
+                    }
+                    document.write("</tr>");  
+
+                    document.write("<tr>");
+                    for ( var j=0; j<dailyWeather.length ; j++) {
+        
+                        var txt= dailyWeather[j][0]
+    
+
+                        document.write("<td width=100px>"+ txt +"</td>");     
+                    }
+                    document.write("</tr>");   
+
+                    document.write("</table>");             
+                </script>
+            </div>  
+        </div>
+
+        <div id = "air">
+            <P style = "font-size: 20px;"> 대기 정보<br><br><br></P>
+            <div style="padding-left: 10px; width: 390px;">
+                <P style = "font-size: 18px; line-height: 0px;"> 미세먼지 </P>
+                <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                <div>
+                    <div>
+                        <img src='image/graph.svg' style='float: left; width: 130px; height: 90px;'>
+                        <P style = 'float: right; font-size: 15px; font-weight: normal; padding-right: 10px;'> <br><br><br>일상적인 실외활동이 가능합니다. </P>
+                    </div> 
+                </div>
+                <div style="padding-top: 30px;">
+                    <canvas id="mycanvas" style="padding-top: 20px;"></canvas>
+                    <script type="text/javascript">                 
+                        document.write("<table style='width: 100%; text-align:center; border: 1px; white-space:nowrap;border-collapse:collapse; table-layout: fixed;'");
+                        
+                        document.write("<tr>");               
+                            for ( var j=0; j<dust.length ; j++) {
+                                var txt = dust[j]
+    
+                                document.write("<td width=50px>"+ txt +"</td>");     
+                            }
+                        document.write("</tr>");
+
+                        document.write("<tr>");
+                        
+                        for ( var j=0; j<dustTime.length ; j++) {
+                            if (dustTime[j]>12)
+                                var txt = "오후" + (dustTime[j]-12) + "시";
+                            else
+                                var txt = "오전" + (dustTime[j]) + "시";
+
+                            document.write("<td width=50px>"+ txt +"</td>");     
+                        }
+        
+                        document.write("</tr>");
+
+                        document.write("</table>");
+                    </script>
+                </div>
+            </div>
+            <div style="padding-top: 10px;">
+                <div style="float: left; padding-left: 10px; width: 185px;">
+                    <P style = "font-size: 18px; line-height: 0px;"> 오존 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center;"> <script>document.write(airCondition[0]);</script> </P>
+
+                    <P style = "font-size: 18px; line-height: 0px; padding-top: 20px;"> 아황산가스 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center;"> <script>document.write(airCondition[1]);</script> </P>
+                </div>
+                <div style="float: left; padding-left: 20px; width: 185px;">
+                    <P style = "font-size: 18px; line-height: 0px;"> 일산화탄소 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center;"> <script>document.write(airCondition[2]);</script> </P>
+
+                    <P style = "font-size: 18px; line-height: 0px; padding-top: 20px;"> 이산화질소 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center;"> <script>document.write(airCondition[3]);</script> </P>
+                </div>
+            </div>
+        </div>
+
+        <div id = "life">
+            <P style = "font-size: 20px;"> 생활 지수 </P>
+            <div style="padding-top: 10px;">
+                <div style="float: left; padding-left: 10px; width: 185px;">
+                    <P style = "font-size: 18px; line-height: 0px;"> 습도 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <img src='image/water.svg' style="float: left; padding-left: 50px; width: 20px; height: 20px;">     
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center; padding-right: 60px;"> <script>document.write(lifeCondition[0]);</script> </P>
+
+                    <P style = "font-size: 18px; line-height: 0px; padding-top: 20px;">  풍향/풍속 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <img src='image/wind.svg' style="float: left; padding-left: 20px;width: 20px; height: 20px;">
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center; padding-right: 50px;"> <script>document.write(lifeCondition[1]);</script> </P>
+                </div>
+                <div style="float: left; padding-left: 20px; width: 185px;">
+                    <P style = "font-size: 18px; line-height: 0px;"> 자외선 지수</P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <img src='image/sun.svg' style="float: left; padding-left: 50px; width: 25px; height: 25px;">
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center; padding-right: 60px;"> <script>document.write(lifeCondition[2]);</script> </P>
+
+                    <P style = "font-size: 18px; line-height: 0px; padding-top: 20px;"> 불괘 지수 </P>
+                    <hr style="border: solid 1px rgb(0, 0, 0); width: 100%;">
+                    <img src='image/soso.svg' style="float: left; padding-left: 50px;width: 20px; height: 20px;">
+                    <P style = "font-size: 18px; font-weight: normal; text-align: center; padding-right: 60px;"> <script>document.write(lifeCondition[3]);</script> </P>
+                </div>
+            </div>
+        </div>
+
+        <div style="height: 150px; padding-top: 10px;">
+            <button style="margin-left: 100px; border:1px solid; border-radius: 10px;"><a href="./weatherMap.html"><img src='image/earth.svg' style="width: 60px; height: 60px;"><p style="line-height: 0px;">날씨 지도</p></a></button>
+            <button style="margin-left: 90px; border:1px solid; border-radius: 10px;"><a href="./satellite.html"><img src='image/Satellite.svg' style="width: 60px; height: 60px;"><p style="line-height: 0px;">위성 사진</p></a></button>
+        </div>
+
+
+    </div>
+ 
+</body>
+</html>
+
+
+<script>
+    var aiPanner = document.getElementById("ai");
+    var aiPannerBtn = document.getElementById("aiPannerBtn");
+    var simpleHeader = document.getElementById("simpleHeader");
+    var header = document.getElementById("header");
+    var gpsImg = document.getElementById("gpsImg");
+
+    var regionNavi = document.getElementById("regionNavi");
+    var mainTxt0 = document.getElementById("mainTxt0");
+    var mainTxt1 = document.getElementById("mainTxt1");
+    var mainTxt2 = document.getElementById("mainTxt2");
+    var mainTxt3 = document.getElementById("mainTxt3");
+    var mainTxt4 = document.getElementById("mainTxt4");
+    var mainTxt5 = document.getElementById("mainTxt5");
+
+    var headerTxt0 = document.getElementById("headerTxt0");
+    var headerTxt1 = document.getElementById("headerTxt1");
+    var headerTxt2 = document.getElementById("headerTxt2");
+    var headerTxt3 = document.getElementById("headerTxt3");
+
+    var mainBody = document.getElementById("mainBody");
+    
+    function openPanner(){  
+        //alert(document.documentElement.scrollTop);
+        if(aiPannerBtn.innerText == "▼") {
+            aiPannerBtn.innerText = "▲";
+            aiPanner.style.height = 330 + "px";    
+        }
+        else {
+            aiPannerBtn.innerText = "▼";
+            aiPanner.style.height = 50 + "px";
+            simpleHeader.style.visibility = "hidden";
+            header.style.visibility = "visible";
+        }
+    }
+
+    function leftRegion(){
+        regionNo = regionNo - 1;
+
+        if(regionNo < 0) regionNo = mainInfo.length-1;
+
+     
+        var txt = "";
+        for(i=0;i<mainInfo.length; i++){
+            if(i==regionNo) txt = txt+"● ";
+            else txt = txt+"○ ";
+        }
+        regionNavi.innerText = txt;
+
+        mainTxt0.innerText = mainInfo[regionNo][0];
+        mainTxt1.innerText = mainInfo[regionNo][1];
+        mainTxt2.innerText = mainInfo[regionNo][2];
+        mainTxt3.innerText = mainInfo[regionNo][3];
+        mainTxt4.innerText = mainInfo[regionNo][4];
+        mainTxt5.innerText = mainInfo[regionNo][5];
+
+        headerTxt0.innerText = mainInfo[regionNo][0];
+        headerTxt1.innerText = mainInfo[regionNo][1];
+        headerTxt2.innerText = mainInfo[regionNo][2];
+        headerTxt3.innerText = mainInfo[regionNo][3];
+
+        if(mainInfo[regionNo][6]) gpsImg.style.visibility = "visible";
+        else gpsImg.style.visibility = "hidden";
+     
+        if(mainTxt1.innerText == "흐림")
+            mainBody.style.background = "url('image/background.png') no-repeat 0 0";
+    
+        if(mainTxt1.innerText == "맑음")
+            mainBody.style.background = "url('image/backgroundSunny.png') no-repeat 0 0";
+
+        mainBody.style.backgroundRepeat = "no-repeat";
+        mainBody.style.backgroundSize = "cover";
+        mainBody.style.backgroundAttachment = "fixed";
+    }
+
+    function rightRegion(){
+        regionNo = regionNo + 1;
+
+        if(regionNo > mainInfo.length-1) regionNo = 0;
+
+        var txt = "";
+        for(i=0;i<mainInfo.length; i++){
+            if(i==regionNo) txt = txt+"● ";
+            else txt = txt+"○ ";
+        }
+
+        regionNavi.innerText = txt;
+
+        mainTxt0.innerText = mainInfo[regionNo][0];
+        mainTxt1.innerText = mainInfo[regionNo][1];
+        mainTxt2.innerText = mainInfo[regionNo][2];
+        mainTxt3.innerText = mainInfo[regionNo][3];
+        mainTxt4.innerText = mainInfo[regionNo][4];
+        mainTxt5.innerText = mainInfo[regionNo][5];
+
+        headerTxt0.innerText = mainInfo[regionNo][0];
+        headerTxt1.innerText = mainInfo[regionNo][1];
+        headerTxt2.innerText = mainInfo[regionNo][2];
+        headerTxt3.innerText = mainInfo[regionNo][3];
+     
+
+        if(mainTxt1.innerText == "흐림")
+            mainBody.style.background = "url('image/background.png') no-repeat 0 0";
+    
+        if(mainTxt1.innerText == "맑음")
+            mainBody.style.background = "url('image/backgroundSunny.png') no-repeat 0 0";
+
+        mainBody.style.backgroundRepeat = "no-repeat";
+        mainBody.style.backgroundSize = "cover";
+        mainBody.style.backgroundAttachment = "fixed";
+    }
+
+    document.addEventListener('scroll', function() {
+        //alert(simpleHeader.style.visibility);
+        var currentScrollValue = document.documentElement.scrollTop;   
+        if (currentScrollValue > 200)
+        {
+            
+            simpleHeader.style.visibility = "visible";
+            header.style.visibility = "hidden";
+        }
+    
+        if (currentScrollValue < 200)
+        {
+            //alert("ee");
+            simpleHeader.style.visibility = "hidden";
+            header.style.visibility = "visible";
+            aiPanner.style.marginTop = 5 + "px";
+        }
+    });
+    
+    function popupWeather(frm){
+        var url    ="popup.html";
+        var title  = "testpop";
+        var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=480, height=390, top=100,left=100";
+        window.open("", title,status); 
+        frm.target = title;                    
+        frm.action = url;                   
+        frm.method = "get";
+        frm.submit();  
+    }
+
+    function popupWorkout(frm){
+        var url    ="workoutRecommend.html";
+        var title  = "testpop";
+        var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=1020, height=750, top=100,left=100";
+        window.open("", title,status); 
+        frm.target = title;                    
+        frm.action = url;                   
+        frm.method = "get";
+        frm.submit();  
+    }
+
+
+    var canvas = document.getElementById('hourlyCanvas');
+    canvas.width = 50+100*houlyWeather.length;
+    canvas.height = 50;
+    var context = canvas.getContext('2d');
+
+    context.beginPath();
+    context.moveTo(50, 5+(11-houlyWeather[0][2])*10);
+    for(i=1;i<houlyWeather.length; i++)
+    {
+        context.lineTo(50+102*i, 5+(11-houlyWeather[i][2])*10);
+    } 
+    context.stroke();
+
+    context.fillStyle = "green";
+    for(i=0;i<houlyWeather.length; i++)
+    {      
+        context.beginPath();
+        context.arc(50+102*i, 5+(11-houlyWeather[i][2])*10, 5, 0, 2*Math.PI, true);
+        context.fill();
+    } 
+
+
+    var canvas = document.getElementById('mycanvas');
+    canvas.width = 400;
+    canvas.height = 40;
+    var context = canvas.getContext('2d');
+
+    context.beginPath();
+    context.moveTo(40,15);
+    for(i=1; i<dust.length; i++)
+    {
+        context.lineTo(40+78*i, 5+(25-dust[i])*10);
+
+    }
+    context.stroke();
+
+    context.fillStyle = "green";
+    for(i=0; i<dust.length; i++)
+    {
+        context.beginPath();
+        context.arc(40+78*i, 5+(25-dust[i])*10, 5, 0, 2*Math.PI, true);
+        context.fill();
+    }
+
+ 
+</script>
