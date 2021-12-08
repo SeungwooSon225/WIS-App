@@ -537,6 +537,9 @@
         headerTxt1.innerText = mainInfo[regionNo][1];
         headerTxt2.innerText = mainInfo[regionNo][2];
         headerTxt3.innerText = mainInfo[regionNo][3];
+
+        if(mainInfo[regionNo][6]) gpsImg.style.visibility = "visible";
+        else gpsImg.style.visibility = "hidden";
      
 
         if(mainTxt1.innerText == "흐림")
